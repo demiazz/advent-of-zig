@@ -22,7 +22,10 @@ export const title = style({
 
   color: vars.interactive.highlight,
 
-  textShadow: `0 0 5px ${vars.interactive.highlight}`,
+  textShadow: `
+    0 0 2px ${vars.interactive.highlight},
+    0 0 5px ${vars.interactive.highlight}
+  `,
 });
 
 export const years = style({
@@ -35,14 +38,20 @@ export const subTitle = style({
   color: vars.interactive.highlight,
 
   textAlign: "right",
-  textShadow: `0 0 5px ${vars.interactive.highlight}`,
+  textShadow: `
+    0 0 2px ${vars.interactive.highlight},
+    0 0 5px ${vars.interactive.highlight}
+  `,
 });
 
 export const subTitleDelimiter = style({
   color: vars.interactive.inactive,
 
   textAlign: "right",
-  textShadow: `0 0 5px ${vars.interactive.inactive}`,
+  textShadow: `
+    0 0 2px ${vars.interactive.inactive},
+    0 0 5px ${vars.interactive.inactive}
+  `,
 });
 
 export const days = style({
