@@ -11,7 +11,7 @@ pub fn solve(allocator: Allocator, reader: AnyReader) ![]const u8 {
         floor += switch (byte) {
             '(' => 1,
             ')' => -1,
-            else => 0,
+            else => return error.InvalidInput,
         };
 
         if (floor == -1) {
