@@ -6,6 +6,12 @@ import { vanillaExtractPlugin } from "@vanilla-extract/vite-plugin";
 const rootDir = import.meta.dirname;
 
 export default {
+  base: "./",
+
+  build: {
+    assetsInlineLimit: 0,
+  },
+
   plugins: [reactPlugin(), vanillaExtractPlugin()],
 
   resolve: {

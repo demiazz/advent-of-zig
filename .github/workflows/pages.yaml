@@ -1,0 +1,68 @@
+name: Pages
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+  id-token: write
+  pages: write
+
+concurrency:
+  group: 'pages'
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    if: github.repository == 'demiazz/advent_of_zig'
+
+    name: Advent of Zig
+
+    runs-on: ubuntu-latest
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: Checkout the repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install zig
+        uses: mlugg/setup-zig@v1
+        with: 
+          version: 0.14.0-dev.2032+c563ba6b1
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          run_install: false
+
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          cache: pnpm
+          node-version-file: .tool-versions
+
+      - name: Install dependencies
+        shell: bash
+        run: pnpm install
+
+      - name: Build native modules
+        run: zig build
+
+      - name: Build docs
+        run: pnpm vite build
+
+      - name: Upload docs artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+      - name: Deploy docs to Github Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
