@@ -1,6 +1,10 @@
 const builtin = @import("builtin");
 const std = @import("std");
 
+const SolutionError = error{
+    InvalidInput,
+};
+
 pub fn message(comptime fmt: []const u8, args: anytype) noreturn {
     std.log.err(fmt, args);
 
