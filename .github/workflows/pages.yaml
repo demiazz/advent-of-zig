@@ -16,7 +16,7 @@ concurrency:
 
 jobs:
   deploy:
-    if: github.repository == 'demiazz/advent_of_zig'
+    if: github.repository == 'demiazz/advent-of-zig'
 
     name: Advent of Zig
 
