@@ -1,18 +1,20 @@
 const std = @import("std");
 
+const common = @import("./common.zig");
+
 const Allocator = std.mem.Allocator;
 const AnyReader = std.io.AnyReader;
 
-pub fn solve(allocator: Allocator, reader: AnyReader) ![]const u8 {
+pub fn solve(allocator: Allocator, input: AnyReader) ![]const u8 {
     var floor: i32 = 0;
     var idx: i32 = 1;
 
-    while (reader.readByte()) |byte| {
-        floor += switch (byte) {
-            '(' => 1,
-            ')' => -1,
-            else => return error.InvalidInput,
-        };
+    const reader = common.Reader{
+        .reader = input,
+    };
+
+    while (reader.readNext()) |dir| {
+        floor += dir;
 
         if (floor == -1) {
             break;
