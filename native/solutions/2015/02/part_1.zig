@@ -1,56 +1,27 @@
 const panic = @import("panic");
 const std = @import("std");
 
+const common = @import("./common.zig");
+
 const Allocator = std.mem.Allocator;
 const AnyReader = std.io.AnyReader;
+const Box = common.Box;
+const Parser = common.Parser;
 
-const BytesList = std.ArrayList(u8);
+pub fn solve(allocator: Allocator, reader: AnyReader) ![]const u8 {
+    var parser = Parser.init(allocator, reader);
+    defer parser.deinit();
 
-const Parser = struct {
-    total: i32,
+    const box = try allocator.create(Box);
+    defer allocator.destroy(box);
 
-    data: [3]i32,
-    index: usize,
+    var total: u32 = 0;
 
-    buffer: BytesList,
-
-    fn init(allocator: Allocator) Parser {
-        return .{
-            .total = 0,
-
-            .data = .{ 0, 0, 0 },
-            .index = 0,
-
-            .buffer = BytesList.init(allocator),
-        };
-    }
-
-    fn write(self: *Parser, byte: u8) !void {
-        return switch (byte) {
-            '0'...'9' => try self.buffer.append(byte),
-            'x' => try self.flushDimension(),
-            '\n' => try self.flushTotal(),
-            else => error.InvalidInput,
-        };
-    }
-
-    fn flushDimension(self: *Parser) !void {
-        if (self.buffer.items.len > 0) {
-            self.data[self.index] = try std.fmt.parseInt(i32, self.buffer.items, 10);
-        }
-
-        self.index += 1;
-
-        self.buffer.clearAndFree();
-    }
-
-    fn flushTotal(self: *Parser) !void {
-        try self.flushDimension();
-
-        const sqs = [3]i32{
-            self.data[0] * self.data[1],
-            self.data[1] * self.data[2],
-            self.data[2] * self.data[0],
+    while (parser.read(box)) {
+        const sqs = [_]u32{
+            box[0] * box[1],
+            box[1] * box[2],
+            box[2] * box[0],
         };
 
         const minSq = blk: {
@@ -67,35 +38,14 @@ const Parser = struct {
             break :blk min;
         };
 
-        self.total += 2 * sqs[0] + 2 * sqs[1] + 2 * sqs[2] + minSq;
-
-        self.data[0] = 0;
-        self.data[1] = 0;
-        self.data[2] = 0;
-
-        self.index = 0;
-    }
-
-    fn deinit(self: *Parser) void {
-        self.buffer.deinit();
-    }
-};
-
-pub fn solve(allocator: Allocator, reader: AnyReader) ![]const u8 {
-    var parser = Parser.init(allocator);
-    defer parser.deinit();
-
-    while (reader.readByte()) |byte| {
-        try parser.write(byte);
+        total += 2 * sqs[0] + 2 * sqs[1] + 2 * sqs[2] + minSq;
     } else |err| {
         if (err != error.EndOfStream) {
             return err;
         }
     }
 
-    try parser.flushTotal();
-
-    return try std.fmt.allocPrint(allocator, "{d}", .{parser.total});
+    return try std.fmt.allocPrint(allocator, "{d}", .{total});
 }
 
 test "solution 2015/02/01" {
