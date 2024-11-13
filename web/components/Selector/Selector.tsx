@@ -1,4 +1,4 @@
-import { FC, ReactNode, useId } from "react";
+import { useId } from "preact/hooks";
 
 import { clsx } from "clsx/lite";
 
@@ -18,12 +18,7 @@ type Props = {
   value: number;
 };
 
-export const Selector: FC<Props> = ({
-  className,
-  onSelect,
-  options,
-  value,
-}) => {
+export const Selector = ({ className, onSelect, options, value }: Props) => {
   const name = useId();
 
   const items = options.map((option) => (

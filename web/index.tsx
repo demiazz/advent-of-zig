@@ -1,4 +1,4 @@
-import { createRoot } from "react-dom/client";
+import { render } from "preact";
 
 import { Application } from "@/components/Application";
 
@@ -12,8 +12,6 @@ initialize()
       throw new Error("Can't found root element");
     }
 
-    const root = createRoot(container);
-
-    root.render(<Application solutions={solutions} onSolve={solve} />);
+    render(<Application solutions={solutions} onSolve={solve} />, container);
   })
   .catch((error) => alert(error));

@@ -1,5 +1,3 @@
-import { FC } from "react";
-
 import { Solutions, SolveFn } from "@/types";
 
 import { Form } from "../Form";
@@ -16,7 +14,7 @@ type Props = {
   onSolve: SolveFn;
 };
 
-export const Application: FC<Props> = ({ solutions, onSolve }) => {
+export const Application = ({ solutions, onSolve }: Props) => {
   const {
     year,
     day,

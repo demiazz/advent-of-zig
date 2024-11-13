@@ -1,5 +1,3 @@
-import { ChangeEventHandler, memo } from "react";
-
 import * as styles from "./Selector.css";
 
 type Props = {
@@ -13,24 +11,26 @@ type Props = {
   value: number;
 };
 
-export const Item = memo<Props>(
-  ({ isChecked, isDisabled, onSelect, value }) => {
-    const handleChange: ChangeEventHandler<HTMLInputElement> = (event) => {
-      onSelect(parseInt(event.target.value));
-    };
+export const Item = ({ isChecked, isDisabled, onSelect, value }: Props) => {
+  const handleChange = (event: InputEvent) => {
+    if (!(event.target instanceof HTMLInputElement)) {
+      return;
+    }
 
-    return (
-      <label className={styles.item}>
-        <input
-          className={styles.input}
-          checked={isChecked}
-          disabled={isDisabled}
-          onChange={handleChange}
-          type="radio"
-          value={value}
-        />
-        [{value}]
-      </label>
-    );
-  },
-);
+    onSelect(parseInt(event.target.value));
+  };
+
+  return (
+    <label className={styles.item}>
+      <input
+        className={styles.input}
+        checked={isChecked}
+        disabled={isDisabled}
+        onInput={handleChange}
+        type="radio"
+        value={value}
+      />
+      [{value}]
+    </label>
+  );
+};

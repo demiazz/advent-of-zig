@@ -1,5 +1,3 @@
-import { FC } from "react";
-
 import { Answer } from "@/types";
 
 import * as styles from "./Results.css";
@@ -10,7 +8,7 @@ type Props = {
   answer: Exclude<Answer, null>;
 };
 
-export const Result: FC<Props> = ({ label, answer }) => {
+export const Result = ({ label, answer }: Props) => {
   if (answer.ok)
     if (answer != null) {
       return (

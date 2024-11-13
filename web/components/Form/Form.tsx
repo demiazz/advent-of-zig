@@ -1,4 +1,4 @@
-import { ChangeEventHandler, memo, useState } from "react";
+import { useState } from "preact/hooks";
 
 import { clsx } from "clsx/lite";
 
@@ -21,74 +21,76 @@ type Props = {
   onSubmit: SubmitFn;
 };
 
-export const Form = memo<Props>(
-  ({
-    className,
-    isDisabled,
-    isPartOneAvailable,
-    isPartTwoAvailable,
-    onSubmit,
-  }) => {
-    const [value, setValue] = useState("");
+export const Form = ({
+  className,
+  isDisabled,
+  isPartOneAvailable,
+  isPartTwoAvailable,
+  onSubmit,
+}: Props) => {
+  const [value, setValue] = useState("");
 
-    const isButtonDisabled = isDisabled || value.trim().length === 0;
+  const isButtonDisabled = isDisabled || value.trim().length === 0;
 
-    const handleChange: ChangeEventHandler<HTMLTextAreaElement> = (event) => {
-      setValue(event.target.value);
-    };
+  const handleChange = (event: InputEvent) => {
+    if (event.data == null) {
+      return;
+    }
 
-    const handlePartOne = () => {
-      onSubmit(true, false, value);
-    };
+    setValue(event.data);
+  };
 
-    const handlePartTwo = () => {
-      onSubmit(false, true, value);
-    };
+  const handlePartOne = () => {
+    onSubmit(true, false, value);
+  };
 
-    const handlePartBoth = () => {
-      onSubmit(true, true, value);
-    };
+  const handlePartTwo = () => {
+    onSubmit(false, true, value);
+  };
 
-    return (
-      <div className={clsx(styles.root, className)}>
-        <textarea
-          className={styles.input}
-          disabled={isDisabled}
-          onChange={handleChange}
-          placeholder="Paste your input and select which parts you want to solve"
-          rows={15}
-          value={value}
-        />
-        <div className={styles.actions}>
-          {isPartOneAvailable && (
-            <button
-              className={styles.action}
-              disabled={isButtonDisabled}
-              onClick={handlePartOne}
-            >
-              [Part One]
-            </button>
-          )}
-          {isPartTwoAvailable && (
-            <button
-              className={styles.action}
-              disabled={isButtonDisabled}
-              onClick={handlePartTwo}
-            >
-              [Part Two]
-            </button>
-          )}
-          {isPartOneAvailable && isPartTwoAvailable && (
-            <button
-              className={styles.action}
-              disabled={isButtonDisabled}
-              onClick={handlePartBoth}
-            >
-              [Both Parts]
-            </button>
-          )}
-        </div>
+  const handlePartBoth = () => {
+    onSubmit(true, true, value);
+  };
+
+  return (
+    <div className={clsx(styles.root, className)}>
+      <textarea
+        className={styles.input}
+        disabled={isDisabled}
+        onInput={handleChange}
+        placeholder="Paste your input and select which parts you want to solve"
+        rows={15}
+        value={value}
+      />
+      <div className={styles.actions}>
+        {isPartOneAvailable && (
+          <button
+            className={styles.action}
+            disabled={isButtonDisabled}
+            onClick={handlePartOne}
+          >
+            [Part One]
+          </button>
+        )}
+        {isPartTwoAvailable && (
+          <button
+            className={styles.action}
+            disabled={isButtonDisabled}
+            onClick={handlePartTwo}
+          >
+            [Part Two]
+          </button>
+        )}
+        {isPartOneAvailable && isPartTwoAvailable && (
+          <button
+            className={styles.action}
+            disabled={isButtonDisabled}
+            onClick={handlePartBoth}
+          >
+            [Both Parts]
+          </button>
+        )}
       </div>
-    );
-  }
-);
+    </div>
+  );
+};

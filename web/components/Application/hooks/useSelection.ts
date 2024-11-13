@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "preact/hooks";
 
 import { Solutions } from "../../../types";
 
@@ -75,7 +75,7 @@ export function useSelection(solutions: Solutions): Result {
         };
       });
     },
-    [solutions],
+    [solutions]
   );
 
   const handleSelectYear = useCallback(
@@ -100,7 +100,7 @@ export function useSelection(solutions: Solutions): Result {
         return { year: nextYear, day, isPartOneAvailable, isPartTwoAvailable };
       });
     },
-    [solutions],
+    [solutions]
   );
 
   const availableYears = useMemo(() => [...solutions.keys()], [solutions]);
