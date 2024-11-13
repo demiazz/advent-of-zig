@@ -1,16 +1,20 @@
 const std = @import("std");
 
-fn appendAnonymousImports(b: *std.Build, c: *std.Build.Step.Compile) void {
-    c.root_module.addAnonymousImport("panic", .{
+pub fn build(b: *std.Build) void {
+    const panic_module = b.addModule("panic", .{
         .root_source_file = b.path("native/panic.zig"),
     });
 
-    c.root_module.addAnonymousImport("registry", .{
+    const tools_module = b.addModule("tools", .{
+        .root_source_file = b.path("native/tools/tools.zig"),
+    });
+
+    const registry_module = b.addModule("registry", .{
         .root_source_file = b.path("native/solutions/registry.zig"),
     });
-}
 
-pub fn build(b: *std.Build) void {
+    registry_module.addImport("tools", tools_module);
+
     const wasm = b.addExecutable(.{
         .name = "advent-of-zig",
         .root_source_file = b.path("native/wasm/main.zig"),
@@ -20,7 +24,8 @@ pub fn build(b: *std.Build) void {
     wasm.entry = .disabled;
     wasm.rdynamic = true;
 
-    appendAnonymousImports(b, wasm);
+    wasm.root_module.addImport("panic", panic_module);
+    wasm.root_module.addImport("registry", registry_module);
 
     b.installArtifact(wasm);
 
@@ -31,7 +36,8 @@ pub fn build(b: *std.Build) void {
         .target = b.host,
     });
 
-    appendAnonymousImports(b, cli);
+    cli.root_module.addImport("panic", panic_module);
+    cli.root_module.addImport("registry", registry_module);
 
     b.installArtifact(cli);
 
@@ -45,4 +51,15 @@ pub fn build(b: *std.Build) void {
 
     const run_step = b.step("run", "Run the app");
     run_step.dependOn(&run_cmd.step);
+
+    const unit_tests = b.addTest(.{
+        .root_source_file = b.path("native/solutions/solutions.zig"),
+    });
+
+    unit_tests.root_module.addImport("tools", tools_module);
+
+    const run_unit_tests = b.addRunArtifact(unit_tests);
+
+    const test_step = b.step("test", "Run unit tests");
+    test_step.dependOn(&run_unit_tests.step);
 }

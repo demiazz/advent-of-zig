@@ -19,4 +19,4 @@ dev-web:
 	pnpm vite dev
 
 test-native:
-	zig test native/solutions/solutions.zig
+	zig build test

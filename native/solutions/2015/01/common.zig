@@ -1,69 +1,19 @@
 const std = @import("std");
+const tools = @import("tools");
 
 const AnyReader = std.io.AnyReader;
+const ByteParser = tools.ByteParser;
+const ByteParserError = tools.ByteParserError;
 
-pub const Parser = struct {
-    is_end: bool,
-    is_invalid: bool,
+fn process(byte: u8) ByteParserError!i32 {
+    return switch (byte) {
+        '(' => 1,
+        ')' => -1,
+        else => error.InvalidInput,
+    };
+}
 
-    reader: AnyReader,
-
-    pub fn init(reader: AnyReader) Parser {
-        return .{
-            .is_end = false,
-            .is_invalid = false,
-
-            .reader = reader,
-        };
-    }
-
-    pub fn read(self: *Parser) !i32 {
-        if (self.is_invalid) {
-            return error.InvalidInput;
-        }
-
-        if (self.is_end) {
-            return error.EndOfStream;
-        }
-
-        if (self.reader.readByte()) |byte| {
-            return switch (byte) {
-                '(' => 1,
-                ')' => -1,
-                '\n' => self.onEndOfStream(),
-                else => self.onInvalidInput(),
-            };
-        } else |err| {
-            return self.onError(err);
-        }
-    }
-
-    fn onError(self: *Parser, err: anyerror) anyerror!i32 {
-        switch (err) {
-            error.EndOfStream => return self.onEndOfStream(),
-            error.InvalidInput => return self.onInvalidInput(),
-            else => {
-                self.is_end = true;
-                self.is_invalid = true;
-
-                return err;
-            },
-        }
-    }
-
-    fn onEndOfStream(self: *Parser) !i32 {
-        self.is_end = true;
-
-        return error.EndOfStream;
-    }
-
-    fn onInvalidInput(self: *Parser) !i32 {
-        self.is_end = true;
-        self.is_invalid = true;
-
-        return error.InvalidInput;
-    }
-};
+pub const Parser = ByteParser(i32, process);
 
 fn checkInput(comptime input: []const u8, comptime output: []const i32, is_valid: bool) !void {
     var stream = std.io.fixedBufferStream(input);

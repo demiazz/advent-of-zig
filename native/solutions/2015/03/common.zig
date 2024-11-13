@@ -1,72 +1,22 @@
 const std = @import("std");
+const tools = @import("tools");
 
 const AnyReader = std.io.AnyReader;
+const ByteParser = tools.ByteParser;
+const ByteParserError = tools.ByteParserError;
 const Direction = enum { north, south, east, west };
 
-pub const Parser = struct {
-    is_end: bool,
-    is_invalid: bool,
+fn process(byte: u8) ByteParserError!Direction {
+    return switch (byte) {
+        '^' => .north,
+        'v' => .south,
+        '>' => .east,
+        '<' => .west,
+        else => error.InvalidInput,
+    };
+}
 
-    reader: AnyReader,
-
-    pub fn init(reader: AnyReader) Parser {
-        return .{
-            .is_end = false,
-            .is_invalid = false,
-
-            .reader = reader,
-        };
-    }
-
-    pub fn read(self: *Parser) !Direction {
-        if (self.is_invalid) {
-            return error.InvalidInput;
-        }
-
-        if (self.is_end) {
-            return error.EndOfStream;
-        }
-
-        if (self.reader.readByte()) |byte| {
-            return switch (byte) {
-                '^' => .north,
-                'v' => .south,
-                '>' => .east,
-                '<' => .west,
-                '\n' => self.onEndOfStream(),
-                else => self.onInvalidInput(),
-            };
-        } else |err| {
-            return self.onError(err);
-        }
-    }
-
-    fn onError(self: *Parser, err: anyerror) anyerror!Direction {
-        switch (err) {
-            error.EndOfStream => return self.onEndOfStream(),
-            error.InvalidInput => return self.onInvalidInput(),
-            else => {
-                self.is_end = true;
-                self.is_invalid = true;
-
-                return err;
-            },
-        }
-    }
-
-    fn onEndOfStream(self: *Parser) !Direction {
-        self.is_end = true;
-
-        return error.EndOfStream;
-    }
-
-    fn onInvalidInput(self: *Parser) !Direction {
-        self.is_end = true;
-        self.is_invalid = true;
-
-        return error.InvalidInput;
-    }
-};
+pub const Parser = ByteParser(Direction, process);
 
 pub const Point = struct {
     x: i32,
