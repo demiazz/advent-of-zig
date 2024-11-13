@@ -30,12 +30,9 @@ pub fn main() !void {
 
         var buffered = std.io.bufferedReader(file.reader());
 
-        var arena = std.heap.ArenaAllocator.init(allocator);
-        defer arena.deinit();
-
         const start = std.time.milliTimestamp();
 
-        const answer = solver(arena.allocator(), buffered.reader().any()) catch |err| panic.@"error"(err);
+        const answer = solver(allocator, buffered.reader().any()) catch |err| panic.@"error"(err);
 
         const end = std.time.milliTimestamp();
 

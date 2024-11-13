@@ -64,10 +64,7 @@ fn _solve(raw_year: u16, raw_day: u16, raw_part: u16, input_ptr: *String) !*Stri
         var input = std.io.fixedBufferStream(input_ptr.toSlice());
         const inputReader = input.reader();
 
-        var arena = std.heap.ArenaAllocator.init(allocator);
-        defer arena.deinit();
-
-        const answer = try solver(arena.allocator(), inputReader.any());
+        const answer = try solver(allocator, inputReader.any());
         const to_export: []const u8 = try allocator.dupe(u8, answer);
 
         return try String.init(allocator, to_export);
