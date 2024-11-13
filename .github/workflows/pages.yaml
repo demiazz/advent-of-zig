@@ -52,6 +52,9 @@ jobs:
         shell: bash
         run: pnpm install
 
+      - name: Run tests
+        run: zig test native/solutions/solutions.zig
+
       - name: Build native modules
         run: zig build
 
