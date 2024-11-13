@@ -1,11 +1,10 @@
 const std = @import("std");
 const tools = @import("tools");
 
-const AnyReader = std.io.AnyReader;
 const ByteParser = tools.ByteParser;
 const ByteParserError = tools.ByteParserError;
 
-fn process(byte: u8) ByteParserError!i32 {
+fn parse(byte: u8) ByteParserError!i32 {
     return switch (byte) {
         '(' => 1,
         ')' => -1,
@@ -13,7 +12,7 @@ fn process(byte: u8) ByteParserError!i32 {
     };
 }
 
-pub const Parser = ByteParser(i32, process);
+pub const Parser = ByteParser(i32, parse);
 
 fn checkInput(comptime input: []const u8, comptime output: []const i32, is_valid: bool) !void {
     var stream = std.io.fixedBufferStream(input);

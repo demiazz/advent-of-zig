@@ -6,7 +6,7 @@ pub const ByteParserError = error{ EndOfStream, InvalidInput };
 
 pub fn ByteParser(
     comptime Item: type,
-    comptime process: *const fn (u8) ByteParserError!Item,
+    comptime parse: *const fn (u8) ByteParserError!Item,
 ) type {
     return struct {
         is_end: bool,
@@ -42,7 +42,7 @@ pub fn ByteParser(
                 return self.onEndOfStream();
             }
 
-            return process(byte);
+            return parse(byte);
         }
 
         fn onError(self: *Self, err: anyerror) anyerror!Item {

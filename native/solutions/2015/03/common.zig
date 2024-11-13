@@ -1,12 +1,11 @@
 const std = @import("std");
 const tools = @import("tools");
 
-const AnyReader = std.io.AnyReader;
 const ByteParser = tools.ByteParser;
 const ByteParserError = tools.ByteParserError;
 const Direction = enum { north, south, east, west };
 
-fn process(byte: u8) ByteParserError!Direction {
+fn parse(byte: u8) ByteParserError!Direction {
     return switch (byte) {
         '^' => .north,
         'v' => .south,
@@ -16,7 +15,7 @@ fn process(byte: u8) ByteParserError!Direction {
     };
 }
 
-pub const Parser = ByteParser(Direction, process);
+pub const Parser = ByteParser(Direction, parse);
 
 pub const Point = struct {
     x: i32,
