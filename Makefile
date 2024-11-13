@@ -1,6 +1,6 @@
 YEAR=2015
-DAY=1
-PART=1
+DAY=4
+PART=2
 
 .PHONY: build-native build-web build dev-native dev-web
 

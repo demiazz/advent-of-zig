@@ -33,9 +33,13 @@ pub fn main() !void {
         var arena = std.heap.ArenaAllocator.init(allocator);
         defer arena.deinit();
 
+        const start = std.time.milliTimestamp();
+
         const answer = solver(arena.allocator(), buffered.reader().any()) catch |err| panic.@"error"(err);
 
-        std.debug.print("{s}", .{answer});
+        const end = std.time.milliTimestamp();
+
+        std.debug.print("{s} ({d}ms)\n", .{ answer, end - start });
     } else {
         panic.message("no solver for given parameters", .{});
     }
