@@ -4,15 +4,14 @@ const common = @import("./common.zig");
 
 const Allocator = std.mem.Allocator;
 const AnyReader = std.io.AnyReader;
+const Parser = common.Parser;
 
 pub fn solve(allocator: Allocator, input: AnyReader) ![]const u8 {
     var floor: i32 = 0;
 
-    const reader = common.Reader{
-        .reader = input,
-    };
+    var parser = Parser.init(input);
 
-    while (reader.readNext()) |dir| {
+    while (parser.read()) |dir| {
         floor += dir;
     } else |err| {
         if (err != error.EndOfStream) {
