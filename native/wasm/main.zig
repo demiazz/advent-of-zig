@@ -11,7 +11,7 @@ const String = external.String;
 
 var allocator = std.heap.wasm_allocator;
 
-pub const std_options = .{
+pub const std_options: std.Options = .{
     .logFn = log.logFn,
 };
 
