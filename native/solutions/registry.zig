@@ -81,6 +81,7 @@ pub const items = [_]Entry{
     entry(.year_2015, .day_05, .part_one, index.solver_2015_05_01),
     entry(.year_2015, .day_05, .part_two, index.solver_2015_05_02),
     entry(.year_2015, .day_06, .part_one, index.solver_2015_06_01),
+    entry(.year_2015, .day_06, .part_two, index.solver_2015_06_02),
 };
 
 pub fn lookup(year: Year, day: Day, part: Part) ?Solver {

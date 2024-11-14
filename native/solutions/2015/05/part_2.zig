@@ -6,6 +6,7 @@ const AnyReader = std.io.AnyReader;
 const LineParser = tools.LineParser;
 
 const Pairs = std.hash_map.AutoHashMap([2]u8, usize);
+
 const Overlap = struct {
     byte: u8,
     index: usize,
