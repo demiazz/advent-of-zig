@@ -114,5 +114,5 @@ test "solution 2015/06/02" {
     const answer = try solve(std.testing.allocator, input.reader().any());
     defer std.testing.allocator.free(answer);
 
-    try std.testing.expectEqualStrings(answer, "543903");
+    try std.testing.expectEqualStrings(answer, "14687245");
 }
