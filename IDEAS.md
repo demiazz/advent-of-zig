@@ -33,3 +33,5 @@ performance gains here?
     return count;
   }
 ```
+
+We can use R-Tree for that purposes.
